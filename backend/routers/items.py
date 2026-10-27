@@ -280,7 +280,7 @@ def submit_claim(
         status=new_claim.status,
         reviewed_by=new_claim.reviewed_by,
         created_at=new_claim.created_at,
-        claimant_name=current_user.name,
+        claimant_name=current_user.full_name,
         claimant_email=current_user.email,
         found_item_title=found_item.title,
     )
@@ -312,7 +312,7 @@ def get_all_claims(
                 status=c.status,
                 reviewed_by=c.reviewed_by,
                 created_at=c.created_at,
-                claimant_name=claimant.name if claimant else "Student",
+                claimant_name=claimant.full_name if claimant else "Student",
                 claimant_email=claimant.email if claimant else "unknown",
                 found_item_title=item.title if item else f"Item #{c.found_item_id}",
             )
@@ -369,8 +369,9 @@ def resolve_claim(
         status=claim.status,
         reviewed_by=claim.reviewed_by,
         created_at=claim.created_at,
-        claimant_name=claimant.name if claimant else "Student",
+        claimant_name=claimant.full_name if claimant else "Student",
         claimant_email=claimant.email if claimant else "unknown",
         found_item_title=found_item.title if found_item else f"Item #{claim.found_item_id}",
     )
+
 
