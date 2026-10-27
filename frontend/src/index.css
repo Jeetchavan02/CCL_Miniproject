@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .neo-box {
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px #000000;
+    border-radius: 0px !important;
+  }
+  .neo-btn {
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px #000000;
+    border-radius: 0px !important;
+    font-weight: 700;
+    transition: all 0.1s ease-in-out;
+  }
+  .neo-btn:hover:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px #000000;
+  }
+  .neo-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes spin-box {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-box {
+  animation: spin-box 1s linear infinite;
+}
