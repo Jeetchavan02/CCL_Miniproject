@@ -5,7 +5,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role") || "student";
+  const userEmail = localStorage.getItem("email") || "";
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -14,97 +15,139 @@ export default function Navbar() {
     navigate("/login");
   };
 
-  // Back button rules: show on /lost/new, /found/new, /claims; hide on /login, /register, /matches
-  const hideBackRoutes = ["/login", "/register", "/matches", "/"];
-  const showBack = !hideBackRoutes.includes(location.pathname);
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-black border-b-2 border-[#2563EB] relative z-50">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* LEFT: Back button + Logo */}
-        <div className="flex items-center gap-4">
-          {showBack ? (
-            <button
-              onClick={() => window.history.back()}
-              className="text-white font-bold hover:text-[#00C2FF] flex items-center gap-1 transition-colors text-sm"
-              title="Go back"
-            >
-              ← Back
-            </button>
-          ) : (
-            <div className="w-0" />
-          )}
-
+    <nav className="bg-black border-b-4 border-[#2563EB] sticky top-0 z-50 shadow-md">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* LEFT: Brand Logo */}
+        <div className="flex items-center gap-3">
           <Link
-            to={token ? "/matches" : "/login"}
-            className="text-[#00C2FF] font-bold text-xl tracking-tight flex items-center gap-2"
+            to={token ? "/feed" : "/"}
+            className="text-[#00C2FF] font-black text-xl tracking-tight flex items-center gap-2 hover:opacity-90"
           >
-            <span>🔍</span> LostFound@CRCE
+            <span className="text-2xl">🔍</span>
+            <span className="text-white">LostFound</span>
+            <span className="bg-[#2563EB] text-white text-[10px] uppercase font-black px-1.5 py-0.5 rounded-none border border-white">
+              CRCE
+            </span>
           </Link>
         </div>
 
-        {/* CENTER: Empty spacer */}
-        <div className="hidden md:block flex-1" />
+        {/* CENTER: Direct One-Click Navigation Pills */}
+        <div className="hidden lg:flex items-center gap-2">
+          <Link
+            to="/feed"
+            className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+              isActive("/feed")
+                ? "bg-[#00FF85] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
+                : "bg-transparent text-white border-transparent hover:border-white"
+            }`}
+          >
+            📰 Public Feed
+          </Link>
 
-        {/* RIGHT: Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-6 font-bold text-sm tracking-wide">
-          {!token ? (
-            <>
-              <Link
-                to="/login"
-                className="text-white hover:text-[#00C2FF] transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="bg-[#2563EB] text-white px-4 py-2 border-2 border-white neo-btn"
-              >
-                Register
-              </Link>
-            </>
-          ) : (
+          {token && (
             <>
               <Link
                 to="/lost/new"
-                className="text-white hover:text-[#00C2FF] transition-colors"
+                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                  isActive("/lost/new")
+                    ? "bg-[#FF5555] text-white border-white shadow-[2px_2px_0px_rgba(255,255,255,1)]"
+                    : "bg-transparent text-white border-transparent hover:border-white"
+                }`}
               >
-                Report Lost
+                🚨 Report Lost
               </Link>
+
               <Link
                 to="/found/new"
-                className="text-white hover:text-[#00C2FF] transition-colors"
+                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                  isActive("/found/new")
+                    ? "bg-[#00C2FF] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
+                    : "bg-transparent text-white border-transparent hover:border-white"
+                }`}
               >
-                Report Found
+                📸 Report Found
               </Link>
+
               <Link
                 to="/matches"
-                className="text-white hover:text-[#00C2FF] transition-colors"
+                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                  isActive("/matches")
+                    ? "bg-[#FFD60A] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
+                    : "bg-transparent text-white border-transparent hover:border-white"
+                }`}
               >
-                My Matches
+                ⚡ AI Matches
               </Link>
 
               {role === "security" && (
                 <Link
                   to="/claims"
-                  className="text-[#FFD60A] hover:text-white transition-colors"
+                  className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                    isActive("/claims")
+                      ? "bg-[#FF9F1C] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
+                      : "bg-transparent text-[#FFD60A] border-transparent hover:border-[#FFD60A]"
+                  }`}
                 >
-                  Claims
+                  🛡️ Security Desk
                 </Link>
               )}
-
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-3 py-1.5 border-2 border-white neo-btn"
-              >
-                Logout
-              </button>
             </>
           )}
         </div>
 
+        {/* RIGHT: User Badge & Actions */}
+        <div className="hidden lg:flex items-center gap-3">
+          {!token ? (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/login"
+                className="text-white hover:text-[#00C2FF] font-bold text-xs uppercase px-3 py-1.5"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="bg-[#2563EB] text-white px-4 py-1.5 border-2 border-white neo-btn font-bold text-xs uppercase tracking-wider"
+              >
+                Register
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 border border-gray-700 bg-gray-900 px-2.5 py-1 text-xs">
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    role === "security" ? "bg-amber-400" : "bg-emerald-400"
+                  }`}
+                />
+                <span className="text-gray-300 font-medium text-[11px] truncate max-w-[130px]">
+                  {userEmail.split("@")[0] || "User"}
+                </span>
+                <span className="bg-black text-[9px] uppercase font-black text-gray-300 px-1.5 py-0.5 border border-gray-700">
+                  {role}
+                </span>
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 border border-white text-xs font-bold uppercase transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* Mobile Hamburger Button */}
-        <div className="md:hidden">
+        <div className="lg:hidden flex items-center gap-2">
+          {token && (
+            <span className="text-[10px] uppercase font-bold text-[#00C2FF] border border-[#00C2FF] px-2 py-0.5">
+              {role}
+            </span>
+          )}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="text-white text-2xl font-bold p-1 focus:outline-none"
@@ -115,61 +158,69 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Dropdown Drawer */}
       {menuOpen && (
-        <div className="md:hidden bg-black border-t border-[#2563EB] flex flex-col font-bold text-sm tracking-wide">
+        <div className="lg:hidden bg-black border-t-2 border-[#2563EB] p-4 flex flex-col gap-2 font-bold text-sm tracking-wide">
+          <Link
+            to="/feed"
+            onClick={() => setMenuOpen(false)}
+            className="py-2.5 px-4 bg-gray-900 text-[#00FF85] border border-gray-800 flex items-center gap-2"
+          >
+            📰 Public Feed (All Lost & Found)
+          </Link>
+
           {!token ? (
-            <>
+            <div className="flex gap-2 pt-2">
               <Link
                 to="/login"
                 onClick={() => setMenuOpen(false)}
-                className="py-3 px-6 text-white hover:bg-gray-900 border-b border-gray-800"
+                className="flex-1 text-center py-2 bg-gray-800 text-white border border-white text-xs uppercase"
               >
                 Login
               </Link>
               <Link
                 to="/register"
                 onClick={() => setMenuOpen(false)}
-                className="py-3 px-6 text-[#00C2FF] hover:bg-gray-900"
+                className="flex-1 text-center py-2 bg-[#2563EB] text-white border border-white text-xs uppercase"
               >
                 Register
               </Link>
-            </>
+            </div>
           ) : (
             <>
               <Link
                 to="/lost/new"
                 onClick={() => setMenuOpen(false)}
-                className="py-3 px-6 text-white hover:bg-gray-900 border-b border-gray-800"
+                className="py-2.5 px-4 bg-gray-900 text-white border border-gray-800 flex items-center gap-2"
               >
-                Report Lost
+                🚨 Report Lost Item
               </Link>
               <Link
                 to="/found/new"
                 onClick={() => setMenuOpen(false)}
-                className="py-3 px-6 text-white hover:bg-gray-900 border-b border-gray-800"
+                className="py-2.5 px-4 bg-gray-900 text-white border border-gray-800 flex items-center gap-2"
               >
-                Report Found
+                📸 Report Found Item
               </Link>
               <Link
                 to="/matches"
                 onClick={() => setMenuOpen(false)}
-                className="py-3 px-6 text-white hover:bg-gray-900 border-b border-gray-800"
+                className="py-2.5 px-4 bg-gray-900 text-[#FFD60A] border border-gray-800 flex items-center gap-2"
               >
-                My Matches
+                ⚡ My AI Matches
               </Link>
               {role === "security" && (
                 <Link
                   to="/claims"
                   onClick={() => setMenuOpen(false)}
-                  className="py-3 px-6 text-[#FFD60A] hover:bg-gray-900 border-b border-gray-800"
+                  className="py-2.5 px-4 bg-gray-900 text-[#FF9F1C] border border-gray-800 flex items-center gap-2"
                 >
-                  Claims
+                  🛡️ Security Claims Desk
                 </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="text-left py-3 px-6 text-red-400 hover:bg-gray-900"
+                className="text-center py-2 mt-2 bg-red-600 text-white border border-white text-xs uppercase font-bold"
               >
                 Logout
               </button>
@@ -180,3 +231,4 @@ export default function Navbar() {
     </nav>
   );
 }
+
