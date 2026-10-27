@@ -82,3 +82,25 @@ class MatchOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ClaimCreate(BaseModel):
+    found_item_id: int
+    proof_description: str = Field(..., min_length=5, max_length=1000)
+
+
+class ClaimOut(BaseModel):
+    id: int
+    found_item_id: int
+    user_id: int
+    proof_description: str
+    status: str
+    reviewed_by: Optional[int] = None
+    created_at: datetime
+    claimant_name: Optional[str] = None
+    claimant_email: Optional[str] = None
+    found_item_title: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
