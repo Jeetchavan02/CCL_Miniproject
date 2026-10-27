@@ -6,6 +6,8 @@ from sqlalchemy import text
 from config import settings
 from database import get_db, engine, Base
 import models  # Ensures models are imported for metadata creation
+from routers import auth
+from dependencies import require_role
 
 
 @asynccontextmanager
@@ -33,6 +35,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register routers
+app.include_router(auth.router, prefix="/auth")
 
 
 @app.get("/")
@@ -66,3 +71,11 @@ def health_check(db: Session = Depends(get_db)):
                 "error": str(e),
             },
         )
+
+
+@app.get("/test-security-only", tags=["Testing"])
+def test_security_only(user: models.User = Depends(require_role("security"))):
+    """
+    Test endpoint protected by require_role('security') for 403 test verification.
+    """
+    return {"message": f"Welcome, security officer {user.full_name}!", "role": user.role}

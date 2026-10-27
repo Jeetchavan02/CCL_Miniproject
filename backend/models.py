@@ -27,7 +27,7 @@ class User(Base):
     # Relationships
     lost_items = relationship("LostItem", back_populates="user", cascade="all, delete-orphan")
     found_items = relationship("FoundItem", back_populates="user", cascade="all, delete-orphan")
-    claims = relationship("Claim", back_populates="user", cascade="all, delete-orphan")
+    claims = relationship("Claim", back_populates="user", cascade="all, delete-orphan", foreign_keys="Claim.user_id")
 
 
 class LostItem(Base):
