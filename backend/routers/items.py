@@ -230,3 +230,147 @@ def get_found_item_by_id(item_id: int, db: Session = Depends(get_db)):
         status=item.status,
         created_at=item.created_at,
     )
+
+
+# ----------------- Claims Endpoints (Phase 13) -----------------
+from schemas import ClaimCreate, ClaimOut
+
+@router.post("/claims", response_model=ClaimOut, status_code=status.HTTP_201_CREATED)
+def submit_claim(
+    claim_in: ClaimCreate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Submit an ownership claim on a found item. Any authenticated student or staff.
+    """
+    found_item = db.query(models.FoundItem).filter(models.FoundItem.id == claim_in.found_item_id).first()
+    if not found_item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Found item #{claim_in.found_item_id} not found.",
+        )
+
+    # Check if this user already claimed this item
+    existing = db.query(models.Claim).filter(
+        models.Claim.found_item_id == claim_in.found_item_id,
+        models.Claim.user_id == current_user.id,
+    ).first()
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You have already submitted a claim for this item.",
+        )
+
+    new_claim = models.Claim(
+        found_item_id=claim_in.found_item_id,
+        user_id=current_user.id,
+        proof_description=claim_in.proof_description,
+        status="pending",
+    )
+    db.add(new_claim)
+    db.commit()
+    db.refresh(new_claim)
+
+    return ClaimOut(
+        id=new_claim.id,
+        found_item_id=new_claim.found_item_id,
+        user_id=new_claim.user_id,
+        proof_description=new_claim.proof_description,
+        status=new_claim.status,
+        reviewed_by=new_claim.reviewed_by,
+        created_at=new_claim.created_at,
+        claimant_name=current_user.name,
+        claimant_email=current_user.email,
+        found_item_title=found_item.title,
+    )
+
+
+@router.get("/claims", response_model=List[ClaimOut])
+def get_all_claims(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Get claims. Security/Admin view all claims; regular users view their own claims.
+    """
+    if current_user.role in ["security", "admin"]:
+        claims = db.query(models.Claim).order_by(models.Claim.created_at.desc()).all()
+    else:
+        claims = db.query(models.Claim).filter(models.Claim.user_id == current_user.id).order_by(models.Claim.created_at.desc()).all()
+
+    results = []
+    for c in claims:
+        item = db.query(models.FoundItem).filter(models.FoundItem.id == c.found_item_id).first()
+        claimant = db.query(models.User).filter(models.User.id == c.user_id).first()
+        results.append(
+            ClaimOut(
+                id=c.id,
+                found_item_id=c.found_item_id,
+                user_id=c.user_id,
+                proof_description=c.proof_description,
+                status=c.status,
+                reviewed_by=c.reviewed_by,
+                created_at=c.created_at,
+                claimant_name=claimant.name if claimant else "Student",
+                claimant_email=claimant.email if claimant else "unknown",
+                found_item_title=item.title if item else f"Item #{c.found_item_id}",
+            )
+        )
+    return results
+
+
+@router.put("/claims/{claim_id}/resolve", response_model=ClaimOut)
+def resolve_claim(
+    claim_id: int,
+    action: str,  # "approve" or "reject"
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Security officer reviews and approves or rejects a claim.
+    """
+    if current_user.role not in ["security", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only security officers or admins can review and resolve claims.",
+        )
+
+    claim = db.query(models.Claim).filter(models.Claim.id == claim_id).first()
+    if not claim:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Claim #{claim_id} not found.",
+        )
+
+    if action not in ["approve", "reject"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Action must be 'approve' or 'reject'.",
+        )
+
+    claim.status = "approved" if action == "approve" else "rejected"
+    claim.reviewed_by = current_user.id
+
+    # If approved, mark the found item as claimed / handed over
+    found_item = db.query(models.FoundItem).filter(models.FoundItem.id == claim.found_item_id).first()
+    if found_item and action == "approve":
+        found_item.status = "claimed"
+
+    db.commit()
+    db.refresh(claim)
+
+    claimant = db.query(models.User).filter(models.User.id == claim.user_id).first()
+    return ClaimOut(
+        id=claim.id,
+        found_item_id=claim.found_item_id,
+        user_id=claim.user_id,
+        proof_description=claim.proof_description,
+        status=claim.status,
+        reviewed_by=claim.reviewed_by,
+        created_at=claim.created_at,
+        claimant_name=claimant.name if claimant else "Student",
+        claimant_email=claimant.email if claimant else "unknown",
+        found_item_title=found_item.title if found_item else f"Item #{claim.found_item_id}",
+    )
+
