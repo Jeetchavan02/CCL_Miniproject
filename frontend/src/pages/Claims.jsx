@@ -253,6 +253,33 @@ export default function Claims() {
                     <span className="font-bold block mb-0.5 text-black">Submitted Proof Description:</span>
                     "{c.proof_description}"
                   </div>
+
+                  {/* VISUAL HANDOVER RECEIPT / CERTIFICATE */}
+                  {c.status === "approved" && (
+                    <div className="mt-3 p-3 bg-emerald-50 border-2 border-emerald-600 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">🤝</span>
+                        <div>
+                          <span className="font-black text-emerald-800 text-xs uppercase block">
+                            Official Custody Handover Complete
+                          </span>
+                          <span className="text-[11px] text-emerald-700">
+                            Ownership verified by Security Desk • Item released to claimant {c.claimant_name}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-black uppercase bg-emerald-600 text-white px-2 py-1 border border-black">
+                        HANDOVER VERIFIED ✓
+                      </span>
+                    </div>
+                  )}
+
+                  {c.status === "pending" && (
+                    <div className="mt-2 text-[11px] font-bold text-amber-700 flex items-center gap-1.5">
+                      <span>⏳</span>
+                      <span>Pending Physical ID & Proof Verification at Campus Security Desk</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* SECURITY ACTION BUTTONS */}
@@ -280,4 +307,5 @@ export default function Claims() {
     </div>
   );
 }
+
 

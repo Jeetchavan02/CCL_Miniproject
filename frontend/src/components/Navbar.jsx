@@ -83,21 +83,20 @@ export default function Navbar() {
                 ⚡ AI Matches
               </Link>
 
-              {role === "security" && (
-                <Link
-                  to="/claims"
-                  className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
-                    isActive("/claims")
-                      ? "bg-[#FF9F1C] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
-                      : "bg-transparent text-[#FFD60A] border-transparent hover:border-[#FFD60A]"
-                  }`}
-                >
-                  🛡️ Security Desk
-                </Link>
-              )}
+              <Link
+                to="/claims"
+                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                  isActive("/claims")
+                    ? "bg-[#FF9F1C] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
+                    : "bg-transparent text-[#FFD60A] border-transparent hover:border-[#FFD60A]"
+                }`}
+              >
+                {role === "security" ? "🛡️ Security Handover Desk" : "🤝 Claims & Handover"}
+              </Link>
             </>
           )}
         </div>
+
 
         {/* RIGHT: User Badge & Actions */}
         <div className="hidden lg:flex items-center gap-3">
