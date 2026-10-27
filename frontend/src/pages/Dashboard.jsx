@@ -730,26 +730,42 @@ export default function Dashboard() {
                           ⚡ AI Match #{m.id}
                         </span>
                         <span className="text-lg font-black text-[#2563EB]">
-                          {(m.confidence_score * 100).toFixed(0)}% Score
+                          {m.confidence_score > 1
+                            ? Math.round(m.confidence_score)
+                            : Math.round(m.confidence_score * 100)}% Match
                         </span>
                       </div>
 
-                      <div className="bg-[#F0F4FF] border border-black p-3 mb-3 text-xs">
-                        <p className="font-bold text-black">
-                          Lost Item: {m.lostItem?.title || `#${m.lost_item_id}`}
-                        </p>
-                        <p className="text-gray-600">
-                          Matched with Found Item #{m.found_item_id}
-                        </p>
-                      </div>
+
+                      {(() => {
+                        const foundMatch = foundItems.find((f) => f.id === m.found_item_id);
+                        return (
+                          <div className="bg-[#F0F4FF] border border-black p-3 mb-4 space-y-2">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="font-bold text-red-600">🚨 Your Lost Item:</span>
+                              <span className="font-semibold text-black">{m.lostItem?.title || `#${m.lost_item_id}`}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs border-t border-gray-300 pt-1.5">
+                              <span className="font-bold text-emerald-600">📦 Found Belonging:</span>
+                              <span className="font-semibold text-black">{foundMatch ? foundMatch.title : `Found Item #${m.found_item_id}`}</span>
+                            </div>
+                            {foundMatch && (
+                              <p className="text-[11px] text-gray-500 italic">
+                                Found at: {foundMatch.location_found} • {foundMatch.category}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       <Link
                         to="/matches"
-                        className="text-center bg-[#2563EB] text-white py-2 border-2 border-black neo-btn font-bold text-xs uppercase tracking-wide"
+                        className="text-center bg-[#2563EB] text-white py-2 border-2 border-black neo-btn font-bold text-xs uppercase tracking-wide hover:bg-blue-700"
                       >
                         Review Match & Verify →
                       </Link>
                     </div>
+
                   ))}
                 </div>
               )}
