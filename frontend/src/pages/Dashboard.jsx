@@ -147,7 +147,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="flex justify-between border-b border-gray-200 pb-2">
-                <span className="font-bold text-gray-600">Status:</span>
+                <span className="font-bold text-gray-600">Custody Status:</span>
                 <span className="font-bold uppercase text-xs bg-yellow-300 border border-black px-2 py-0.5">
                   {selectedItem.status}
                 </span>
@@ -162,7 +162,95 @@ export default function Dashboard() {
               )}
             </div>
 
+            {/* VISUAL RECOVERY TIMELINE (PHASE 12) */}
+            <div className="mt-6 pt-4 border-t-2 border-black">
+              <h4 className="text-xs font-black uppercase tracking-wider text-black flex items-center gap-1.5 mb-3">
+                <span>📍</span> Item Recovery Timeline
+              </h4>
+
+              <div className="relative pl-6 space-y-4 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-black">
+                {/* Stage 1: Reported */}
+                <div className="relative">
+                  <span className="absolute -left-6 top-0.5 w-3.5 h-3.5 rounded-full bg-[#00FF85] border-2 border-black" />
+                  <div className="text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-black uppercase">Reported on Campus</span>
+                      <span className="text-[10px] text-gray-500 font-mono">
+                        {new Date(selectedItem.date_found || selectedItem.date_lost || selectedItem.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 text-[11px] mt-0.5">
+                      Logged at {selectedItem.location_found || selectedItem.location_lost}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Stage 2: Rekognition Computer Vision */}
+                <div className="relative">
+                  <span className="absolute -left-6 top-0.5 w-3.5 h-3.5 rounded-full bg-[#2563EB] border-2 border-black" />
+                  <div className="text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-black uppercase">AWS AI Vision Analysis</span>
+                      <span className="text-[9px] font-black uppercase bg-blue-100 text-blue-700 px-1 border border-blue-400">
+                        Completed
+                      </span>
+                    </div>
+                    <p className="text-gray-600 text-[11px] mt-0.5">
+                      {selectedItem.presigned_url
+                        ? "Labels & confidence scores extracted via AWS Rekognition"
+                        : "Text semantic matching & metadata index updated"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Stage 3: SNS Notification */}
+                <div className="relative">
+                  <span className="absolute -left-6 top-0.5 w-3.5 h-3.5 rounded-full bg-[#FFD60A] border-2 border-black" />
+                  <div className="text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-black uppercase">Automated Alert Dispatch</span>
+                      <span className="text-[9px] font-black uppercase bg-amber-100 text-amber-700 px-1 border border-amber-400">
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-gray-600 text-[11px] mt-0.5">
+                      Dispatched to Amazon SNS subscribers & matching pipeline
+                    </p>
+                  </div>
+                </div>
+
+                {/* Stage 4: Claim Verification */}
+                <div className="relative">
+                  <span
+                    className={`absolute -left-6 top-0.5 w-3.5 h-3.5 rounded-full border-2 border-black ${
+                      selectedItem.status === "claimed" ? "bg-[#00FF85]" : "bg-gray-200"
+                    }`}
+                  />
+                  <div className="text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-black uppercase">Claim & Handover</span>
+                      <span
+                        className={`text-[9px] font-black uppercase px-1 border ${
+                          selectedItem.status === "claimed"
+                            ? "bg-green-100 text-green-700 border-green-500"
+                            : "bg-gray-100 text-gray-500 border-gray-400"
+                        }`}
+                      >
+                        {selectedItem.status === "claimed" ? "Handed Over" : "In Custody"}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 text-[11px] mt-0.5">
+                      {selectedItem.status === "claimed"
+                        ? "Owner identity verified and property returned."
+                        : "Awaiting student claim or security officer verification."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <button
+
               onClick={() => setSelectedItem(null)}
               className="mt-6 w-full bg-black text-white font-bold py-2.5 border-2 border-black neo-btn uppercase text-xs tracking-wider"
             >
