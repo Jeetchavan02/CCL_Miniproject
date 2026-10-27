@@ -15,7 +15,31 @@ export default function FoundNew() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [submittedItem, setSubmittedItem] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [recentlyFound, setRecentlyFound] = useState([]);
+  const [loadingRecent, setLoadingRecent] = useState(true);
+
+  // Fetch all recent found items to display underneath the form
+  const fetchRecentFound = async () => {
+    try {
+      setLoadingRecent(true);
+      const res = await fetch(`${apiUrl}/items/found`);
+      if (res.ok) {
+        const data = await res.json();
+        setRecentlyFound(data);
+      }
+    } catch (e) {
+      console.log("Error loading recent found items", e);
+    } finally {
+      setLoadingRecent(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecentFound();
+  }, [apiUrl]);
+
 
   // Camera state
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -144,16 +168,22 @@ export default function FoundNew() {
         throw new Error(data.detail || "Failed to submit found item report.");
       }
 
+      setSubmittedItem(data);
       setSuccess(true);
-      setTimeout(() => {
-        navigate("/matches");
-      }, 1500);
+      // Reset form fields
+      setTitle("");
+      setDescription("");
+      setLocationFound("");
+      removePhoto();
+      // Refresh the recent found list
+      fetchRecentFound();
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -341,14 +371,134 @@ export default function FoundNew() {
 
           <button
             type="submit"
-            disabled={loading || success}
+            disabled={loading}
             className="w-full bg-[#2563EB] text-white py-3 border-2 border-black neo-btn font-bold tracking-wide mt-4"
           >
-            {loading ? "Submitting..." : "Submit Report"}
+            {loading ? "Analyzing Image & Submitting..." : "Submit Report"}
           </button>
         </form>
+
+        {/* Immediate Submission Feedback Card */}
+        {success && submittedItem && (
+          <div className="mt-6 border-2 border-black bg-[#00FF85] p-5 neo-box">
+            <div className="flex items-start justify-between">
+              <div>
+                <span className="text-xs uppercase font-black bg-black text-white px-2 py-0.5">
+                  ✓ Report Successfully Logged
+                </span>
+                <h3 className="text-xl font-bold text-black mt-2">
+                  {submittedItem.title} (#{submittedItem.id})
+                </h3>
+                <p className="text-xs text-black mt-1 font-medium">
+                  Location: <span className="font-bold">{submittedItem.location_found}</span> • Category: <span className="font-bold">{submittedItem.category}</span>
+                </p>
+                <p className="text-xs text-black mt-1">
+                  🤖 Rekognition labels extracted & automated matching initiated.
+                </p>
+              </div>
+              {submittedItem.presigned_url && (
+                <img
+                  src={submittedItem.presigned_url}
+                  alt={submittedItem.title}
+                  className="w-16 h-16 object-cover border-2 border-black"
+                />
+              )}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2 pt-3 border-t border-black">
+              <button
+                onClick={() => setSuccess(false)}
+                className="bg-white text-black font-bold text-xs uppercase px-3 py-1.5 border-2 border-black neo-btn"
+              >
+                + Report Another Item
+              </button>
+              <button
+                onClick={() => navigate("/matches")}
+                className="bg-[#2563EB] text-white font-bold text-xs uppercase px-3 py-1.5 border-2 border-black neo-btn"
+              >
+                View Matches →
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* RECENTLY LOGGED FOUND ITEMS FEED */}
+      <div className="mt-12">
+        <div className="border-b-4 border-black pb-3 mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-black flex items-center gap-2">
+              <span>📋</span> All Found Items in Custody
+            </h2>
+            <p className="text-gray-600 text-xs mt-0.5">
+              Live inventory of items turned into Campus Security (Total: {recentlyFound.length})
+            </p>
+          </div>
+          <button
+            onClick={fetchRecentFound}
+            className="text-xs font-bold bg-white text-black border-2 border-black px-3 py-1 neo-btn uppercase"
+          >
+            ↻ Refresh
+          </button>
+        </div>
+
+        {loadingRecent ? (
+          <p className="text-xs font-bold text-gray-500">Loading found items inventory...</p>
+        ) : recentlyFound.length === 0 ? (
+          <div className="bg-white border-2 border-black p-6 text-center neo-box">
+            <p className="text-sm font-bold text-black">No items currently reported found. Log one above!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {recentlyFound.map((item) => (
+              <div
+                key={item.id}
+                className="bg-white border-2 border-black neo-box p-4 flex gap-4 items-start"
+              >
+                {/* Photo Thumbnail */}
+                <div className="w-24 h-24 bg-gray-100 border-2 border-black flex-shrink-0 flex items-center justify-center overflow-hidden">
+                  {item.presigned_url ? (
+                    <img
+                      src={item.presigned_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-2xl">📦</span>
+                  )}
+                </div>
+
+                {/* Details */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <span className="text-[10px] font-black uppercase bg-[#F0F4FF] border border-black px-1.5 py-0.5 text-[#2563EB]">
+                      {item.category}
+                    </span>
+                    <span className="text-[10px] font-black uppercase bg-yellow-300 border border-black px-1.5 py-0.5">
+                      {item.status || "reported"}
+                    </span>
+                  </div>
+
+                  <h3 className="font-bold text-black text-sm truncate">{item.title}</h3>
+                  <p className="text-[11px] text-gray-600">
+                    📍 {item.location_found}
+                  </p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">
+                    🗓 {new Date(item.date_found).toLocaleDateString()}
+                  </p>
+
+                  {item.description && (
+                    <p className="text-xs text-gray-700 bg-gray-50 border border-gray-300 p-1.5 mt-2 line-clamp-2">
+                      "{item.description}"
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
 
