@@ -1,6 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import {
+  SearchIcon,
+  AlertIcon,
+  BoxIcon,
+  CameraIcon,
+  ChartIcon,
+  LightningIcon,
+  ShieldIcon,
+  CheckIcon,
+  LocationIcon,
+  CalendarIcon,
+  CloseIcon,
+} from "../components/Icons";
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -118,9 +132,9 @@ export default function Dashboard() {
               </div>
               <button
                 onClick={() => setSelectedItem(null)}
-                className="text-black font-black text-lg border-2 border-black px-2 py-0.5 hover:bg-red-500 hover:text-white"
+                className="text-black p-1 border-2 border-black hover:bg-red-500 hover:text-white"
               >
-                ✕
+                <CloseIcon className="w-5 h-5" />
               </button>
             </div>
 
@@ -132,7 +146,7 @@ export default function Dashboard() {
                   onError={(e) => {
                     e.target.style.display = "none";
                     e.target.parentElement.innerHTML =
-                      '<div class="text-center text-gray-500 font-bold text-xs p-4"><span class="text-4xl block mb-2">📦</span>IMAGE STORED ON AWS CLOUD</div>';
+                      '<div class="text-center text-gray-500 font-bold text-xs p-4 flex flex-col items-center gap-1"><span class="font-black">IMAGE STORED ON AWS CLOUD</span></div>';
                   }}
                   className="w-full h-full object-contain"
                 />
@@ -165,7 +179,8 @@ export default function Dashboard() {
             {/* VISUAL RECOVERY TIMELINE (PHASE 12) */}
             <div className="mt-6 pt-4 border-t-2 border-black">
               <h4 className="text-xs font-black uppercase tracking-wider text-black flex items-center gap-1.5 mb-3">
-                <span>📍</span> Item Recovery Timeline
+                <LocationIcon className="w-4 h-4 text-[#2563EB]" />
+                <span>Item Recovery Timeline</span>
               </h4>
 
               <div className="relative pl-6 space-y-4 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-black">
@@ -299,8 +314,9 @@ export default function Dashboard() {
       {/* 4 STATS TILES */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white border-2 border-black p-5 neo-box flex flex-col justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-gray-500">
-            📦 Found in Custody
+          <span className="text-xs font-black uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+            <BoxIcon className="w-4 h-4 text-emerald-600" />
+            <span>Found in Custody</span>
           </span>
           <div className="mt-2 flex items-baseline justify-between">
             <span className="text-3xl font-black text-black">{foundItems.length}</span>
@@ -311,8 +327,9 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-white border-2 border-black p-5 neo-box flex flex-col justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-gray-500">
-            🚨 Lost Reported
+          <span className="text-xs font-black uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+            <AlertIcon className="w-4 h-4 text-red-600" />
+            <span>Lost Reported</span>
           </span>
           <div className="mt-2 flex items-baseline justify-between">
             <span className="text-3xl font-black text-black">{lostItems.length}</span>
@@ -323,8 +340,9 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-white border-2 border-black p-5 neo-box flex flex-col justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-gray-500">
-            ⚡ AI Matches Detected
+          <span className="text-xs font-black uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+            <LightningIcon className="w-4 h-4 text-amber-500" />
+            <span>AI Matches</span>
           </span>
           <div className="mt-2 flex items-baseline justify-between">
             <span className="text-3xl font-black text-black">{matches.length}</span>
@@ -335,8 +353,9 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-white border-2 border-black p-5 neo-box flex flex-col justify-between">
-          <span className="text-xs font-black uppercase tracking-wider text-gray-500">
-            🛡️ Recovery Status
+          <span className="text-xs font-black uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+            <ShieldIcon className="w-4 h-4 text-blue-600" />
+            <span>Recovery Status</span>
           </span>
           <div className="mt-2 flex items-baseline justify-between">
             <span className="text-3xl font-black text-black">
@@ -356,7 +375,8 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-4 border-b-2 border-black pb-2">
             <div>
               <h2 className="text-lg font-bold text-black flex items-center gap-2">
-                <span>📊</span> Category Breakdown (Lost vs. Found)
+                <ChartIcon className="w-5 h-5 text-[#2563EB]" />
+                <span>Category Breakdown (Lost vs. Found)</span>
               </h2>
               <p className="text-xs text-gray-500">
                 Visualizing distribution of valuables across campus categories
@@ -435,7 +455,8 @@ export default function Dashboard() {
           <div>
             <div className="flex items-center justify-between mb-4 border-b-2 border-black pb-2">
               <h2 className="text-lg font-bold text-black flex items-center gap-2">
-                <span>🔄</span> Recovery Lifecycle
+                <ShieldIcon className="w-5 h-5 text-emerald-600" />
+                <span>Recovery Lifecycle</span>
               </h2>
               <span className="text-[10px] font-black uppercase bg-[#00FF85] text-black px-2 py-0.5 border border-black">
                 PIPELINE
@@ -494,7 +515,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-
       {/* FILTER & SEARCH BAR */}
       <div className="bg-white border-2 border-black neo-box p-4 mb-6 space-y-3">
         <div className="flex flex-col md:flex-row gap-3">
@@ -537,49 +557,53 @@ export default function Dashboard() {
       </div>
 
       {/* TABS */}
-      <div className="flex border-b-4 border-black mb-6">
+      <div className="flex flex-wrap border-b-4 border-black mb-6">
         <button
           onClick={() => setActiveTab("all")}
-          className={`px-5 py-3 font-black text-xs uppercase tracking-wider border-t-2 border-l-2 border-r-2 border-black transition-all ${
+          className={`px-4 py-3 font-black text-xs uppercase tracking-wider border-t-2 border-l-2 border-r-2 border-black flex items-center gap-1.5 transition-all ${
             activeTab === "all"
               ? "bg-black text-white"
               : "bg-white text-black hover:bg-gray-100"
           }`}
         >
-          🔍 All Live Activity ({filteredFound.length + filteredLost.length})
+          <SearchIcon className="w-3.5 h-3.5" />
+          <span>All Live Activity ({filteredFound.length + filteredLost.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab("found")}
-          className={`px-5 py-3 font-black text-xs uppercase tracking-wider border-t-2 border-r-2 border-black transition-all ${
+          className={`px-4 py-3 font-black text-xs uppercase tracking-wider border-t-2 border-r-2 border-black flex items-center gap-1.5 transition-all ${
             activeTab === "found"
               ? "bg-[#00FF85] text-black"
               : "bg-white text-black hover:bg-gray-100"
           }`}
         >
-          📦 Found Items ({filteredFound.length})
+          <BoxIcon className="w-3.5 h-3.5" />
+          <span>Found Items ({filteredFound.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab("lost")}
-          className={`px-5 py-3 font-black text-xs uppercase tracking-wider border-t-2 border-r-2 border-black transition-all ${
+          className={`px-4 py-3 font-black text-xs uppercase tracking-wider border-t-2 border-r-2 border-black flex items-center gap-1.5 transition-all ${
             activeTab === "lost"
               ? "bg-[#FF5555] text-white"
               : "bg-white text-black hover:bg-gray-100"
           }`}
         >
-          🚨 Lost Items ({filteredLost.length})
+          <AlertIcon className="w-3.5 h-3.5" />
+          <span>Lost Items ({filteredLost.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab("matches")}
-          className={`px-5 py-3 font-black text-xs uppercase tracking-wider border-t-2 border-r-2 border-black transition-all ${
+          className={`px-4 py-3 font-black text-xs uppercase tracking-wider border-t-2 border-r-2 border-black flex items-center gap-1.5 transition-all ${
             activeTab === "matches"
               ? "bg-[#FFD60A] text-black"
               : "bg-white text-black hover:bg-gray-100"
           }`}
         >
-          ⚡ AI Matches ({matches.length})
+          <LightningIcon className="w-3.5 h-3.5" />
+          <span>AI Matches ({matches.length})</span>
         </button>
       </div>
 
@@ -610,13 +634,13 @@ export default function Dashboard() {
                         onError={(e) => {
                           e.target.style.display = "none";
                           e.target.parentElement.innerHTML =
-                            '<div class="text-gray-400 font-bold text-xs uppercase flex flex-col items-center"><span class="text-3xl mb-1">📦</span><span>Photo in Cloud</span></div>';
+                            '<div class="text-gray-400 font-bold text-xs uppercase flex flex-col items-center gap-1"><span>Photo in Cloud</span></div>';
                         }}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       />
                     ) : (
-                      <div className="text-gray-400 font-bold text-xs uppercase flex flex-col items-center">
-                        <span className="text-3xl mb-1">📦</span>
+                      <div className="text-gray-400 font-bold text-xs uppercase flex flex-col items-center gap-1">
+                        <BoxIcon className="w-8 h-8 text-gray-400" />
                         <span>No Photo</span>
                       </div>
                     )}
@@ -636,11 +660,13 @@ export default function Dashboard() {
                     <h3 className="font-bold text-black text-base mt-2 truncate">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-gray-600 mt-1">
-                      📍 Found at: <span className="font-bold text-black">{item.location_found}</span>
+                    <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                      <LocationIcon className="w-3.5 h-3.5 text-gray-500" />
+                      <span>Found at: <span className="font-bold text-black">{item.location_found}</span></span>
                     </p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">
-                      🗓 {new Date(item.date_found).toLocaleDateString()}
+                    <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+                      <CalendarIcon className="w-3 h-3 text-gray-400" />
+                      <span>{new Date(item.date_found).toLocaleDateString()}</span>
                     </p>
                     {item.description && (
                       <p className="text-xs text-gray-700 bg-gray-50 border border-gray-300 p-2 mt-2 line-clamp-2">
@@ -667,7 +693,7 @@ export default function Dashboard() {
               >
                 <div>
                   <div className="h-44 bg-red-50 border-b-2 border-black flex flex-col items-center justify-center relative p-4">
-                    <span className="text-4xl mb-2">🚨</span>
+                    <AlertIcon className="w-10 h-10 text-red-500 mb-2" />
                     <span className="text-xs font-black text-red-600 uppercase tracking-widest">
                       LOST VALUABLE
                     </span>
@@ -686,11 +712,13 @@ export default function Dashboard() {
                     <h3 className="font-bold text-black text-base mt-2 truncate">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-gray-600 mt-1">
-                      📍 Misplaced near: <span className="font-bold text-black">{item.location_lost}</span>
+                    <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+                      <LocationIcon className="w-3.5 h-3.5 text-gray-500" />
+                      <span>Misplaced near: <span className="font-bold text-black">{item.location_lost}</span></span>
                     </p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">
-                      🗓 {new Date(item.date_lost).toLocaleDateString()}
+                    <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+                      <CalendarIcon className="w-3 h-3 text-gray-400" />
+                      <span>{new Date(item.date_lost).toLocaleDateString()}</span>
                     </p>
                     {item.description && (
                       <p className="text-xs text-gray-700 bg-gray-50 border border-gray-300 p-2 mt-2 line-clamp-2">
@@ -712,7 +740,7 @@ export default function Dashboard() {
             <div className="col-span-full">
               {matches.length === 0 ? (
                 <div className="bg-white border-2 border-black p-12 text-center neo-box">
-                  <span className="text-4xl block mb-2">⚡</span>
+                  <LightningIcon className="w-10 h-10 text-amber-500 mx-auto mb-2" />
                   <p className="font-bold text-lg text-black">No matches computed yet.</p>
                   <p className="text-xs text-gray-600 mt-1">
                     When you report a lost item and someone turns in a matching found item, Rekognition analyzes features and creates automated alerts here.
@@ -726,8 +754,9 @@ export default function Dashboard() {
                       className="bg-white border-2 border-black neo-box p-5 flex flex-col justify-between"
                     >
                       <div className="flex justify-between items-start mb-3">
-                        <span className="bg-[#FFD60A] text-black font-black text-xs uppercase px-2 py-0.5 border border-black">
-                          ⚡ AI Match #{m.id}
+                        <span className="bg-[#FFD60A] text-black font-black text-xs uppercase px-2 py-0.5 border border-black flex items-center gap-1">
+                          <LightningIcon className="w-3.5 h-3.5 text-black" />
+                          <span>AI Match #{m.id}</span>
                         </span>
                         <span className="text-lg font-black text-[#2563EB]">
                           {m.confidence_score > 1
@@ -742,11 +771,17 @@ export default function Dashboard() {
                         return (
                           <div className="bg-[#F0F4FF] border border-black p-3 mb-4 space-y-2">
                             <div className="flex items-center justify-between text-xs">
-                              <span className="font-bold text-red-600">🚨 Your Lost Item:</span>
+                              <span className="font-bold text-red-600 flex items-center gap-1">
+                                <AlertIcon className="w-3.5 h-3.5 text-red-600" />
+                                <span>Your Lost Item:</span>
+                              </span>
                               <span className="font-semibold text-black">{m.lostItem?.title || `#${m.lost_item_id}`}</span>
                             </div>
                             <div className="flex items-center justify-between text-xs border-t border-gray-300 pt-1.5">
-                              <span className="font-bold text-emerald-600">📦 Found Belonging:</span>
+                              <span className="font-bold text-emerald-600 flex items-center gap-1">
+                                <BoxIcon className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Found Belonging:</span>
+                              </span>
                               <span className="font-semibold text-black">{foundMatch ? foundMatch.title : `Found Item #${m.found_item_id}`}</span>
                             </div>
                             {foundMatch && (

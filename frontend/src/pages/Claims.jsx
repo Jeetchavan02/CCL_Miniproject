@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import {
+  ShieldIcon,
+  CheckIcon,
+  DocumentIcon,
+  HandshakeIcon,
+  CloseIcon,
+} from "../components/Icons";
 
 export default function Claims() {
   const navigate = useNavigate();
@@ -145,15 +152,17 @@ export default function Claims() {
       )}
 
       {successMsg && (
-        <div className="border-2 border-black bg-[#00FF85] text-black p-3 mb-6 text-sm neo-box font-bold">
-          ✓ {successMsg}
+        <div className="border-2 border-black bg-[#00FF85] text-black p-3 mb-6 text-sm neo-box font-bold flex items-center gap-2">
+          <CheckIcon className="w-4 h-4 text-black" />
+          <span>{successMsg}</span>
         </div>
       )}
 
       {/* STUDENT: FILE A CLAIM FORM */}
       <div className="bg-white border-2 border-black neo-box p-6 mb-8">
         <h2 className="text-xl font-bold text-black mb-1 flex items-center gap-2">
-          <span>📝</span> File a New Ownership Claim
+          <DocumentIcon className="w-5 h-5 text-[#2563EB]" />
+          <span>File a New Ownership Claim</span>
         </h2>
         <p className="text-xs text-gray-500 mb-4">
           Select an item currently held at the security desk and describe proof that it belongs to you.
@@ -209,7 +218,8 @@ export default function Claims() {
       <div>
         <div className="border-b-2 border-black pb-2 mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-black flex items-center gap-2">
-            <span>📋</span> {role === "security" ? "All Submitted Claims Review Queue" : "My Submitted Claims"}
+            <DocumentIcon className="w-5 h-5 text-black" />
+            <span>{role === "security" ? "All Submitted Claims Review Queue" : "My Submitted Claims"}</span>
           </h2>
           <span className="text-xs font-mono font-bold bg-gray-100 border border-black px-2 py-0.5">
             Total: {claims.length}
@@ -258,7 +268,7 @@ export default function Claims() {
                   {c.status === "approved" && (
                     <div className="mt-3 p-3 bg-emerald-50 border-2 border-emerald-600 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="text-xl">🤝</span>
+                        <HandshakeIcon className="w-5 h-5 text-emerald-800" />
                         <div>
                           <span className="font-black text-emerald-800 text-xs uppercase block">
                             Official Custody Handover Complete
@@ -268,15 +278,16 @@ export default function Claims() {
                           </span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-black uppercase bg-emerald-600 text-white px-2 py-1 border border-black">
-                        HANDOVER VERIFIED ✓
+                      <span className="text-[10px] font-black uppercase bg-emerald-600 text-white px-2 py-1 border border-black flex items-center gap-1">
+                        <CheckIcon className="w-3.5 h-3.5 text-white" />
+                        <span>HANDOVER VERIFIED</span>
                       </span>
                     </div>
                   )}
 
                   {c.status === "pending" && (
                     <div className="mt-2 text-[11px] font-bold text-amber-700 flex items-center gap-1.5">
-                      <span>⏳</span>
+                      <ShieldIcon className="w-4 h-4 text-amber-600" />
                       <span>Pending Physical ID & Proof Verification at Campus Security Desk</span>
                     </div>
                   )}
@@ -287,15 +298,17 @@ export default function Claims() {
                   <div className="flex flex-col sm:flex-row gap-2 self-stretch md:self-auto">
                     <button
                       onClick={() => handleResolve(c.id, "approve")}
-                      className="bg-[#00FF85] text-black border-2 border-black font-black text-xs uppercase px-4 py-2 neo-btn hover:bg-emerald-400"
+                      className="bg-[#00FF85] text-black border-2 border-black font-black text-xs uppercase px-4 py-2 neo-btn hover:bg-emerald-400 flex items-center justify-center gap-1.5"
                     >
-                      ✓ Approve & Hand Over
+                      <CheckIcon className="w-3.5 h-3.5 text-black" />
+                      <span>Approve & Hand Over</span>
                     </button>
                     <button
                       onClick={() => handleResolve(c.id, "reject")}
-                      className="bg-red-500 text-white border-2 border-black font-black text-xs uppercase px-4 py-2 neo-btn hover:bg-red-600"
+                      className="bg-red-500 text-white border-2 border-black font-black text-xs uppercase px-4 py-2 neo-btn hover:bg-red-600 flex items-center justify-center gap-1.5"
                     >
-                      ✕ Reject
+                      <CloseIcon className="w-3.5 h-3.5 text-white" />
+                      <span>Reject</span>
                     </button>
                   </div>
                 )}

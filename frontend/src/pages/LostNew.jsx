@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CheckIcon } from "../components/Icons";
 
 export default function LostNew() {
   const navigate = useNavigate();
@@ -70,7 +71,8 @@ export default function LostNew() {
 
         {success && (
           <div className="border-2 border-black bg-[#00FF85] text-black p-4 mb-6 text-sm neo-box font-bold flex items-center gap-2">
-            <span>✓</span> Report submitted! Checking potential matches...
+            <CheckIcon className="w-4 h-4 text-black" />
+            <span>Report submitted! Checking potential matches...</span>
           </div>
         )}
 

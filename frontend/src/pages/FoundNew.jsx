@@ -1,5 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  CameraIcon,
+  BoxIcon,
+  CheckIcon,
+  CloseIcon,
+  LocationIcon,
+  CalendarIcon,
+  DocumentIcon,
+} from "../components/Icons";
 
 export default function FoundNew() {
   const navigate = useNavigate();
@@ -216,9 +225,9 @@ export default function FoundNew() {
               </div>
               <button
                 onClick={() => setSelectedItem(null)}
-                className="text-black font-black text-lg border-2 border-black px-2 py-0.5 hover:bg-red-500 hover:text-white"
+                className="text-black p-1 border-2 border-black hover:bg-red-500 hover:text-white"
               >
-                ✕
+                <CloseIcon className="w-5 h-5" />
               </button>
             </div>
 
@@ -231,14 +240,14 @@ export default function FoundNew() {
                   onError={(e) => {
                     e.target.style.display = "none";
                     e.target.parentElement.innerHTML =
-                      '<div class="text-center text-gray-500 font-bold text-xs p-4"><span class="text-4xl block mb-2">📦</span>IMAGE STORED ON CLOUD / LOCAL PREVIEW UNAVAILABLE</div>';
+                      '<div class="text-center text-gray-500 font-bold text-xs p-4 flex flex-col items-center gap-1"><span class="font-black">IMAGE STORED ON CLOUD</span></div>';
                   }}
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <div className="text-center text-gray-400 p-4 font-bold text-xs">
-                  <span className="text-4xl block mb-2">📦</span>
-                  NO PHOTO UPLOADED FOR THIS ITEM
+                <div className="text-center text-gray-400 p-4 font-bold text-xs flex flex-col items-center gap-1">
+                  <BoxIcon className="w-8 h-8 text-gray-400" />
+                  <span>NO PHOTO UPLOADED FOR THIS ITEM</span>
                 </div>
               )}
             </div>
@@ -297,7 +306,8 @@ export default function FoundNew() {
 
         {success && (
           <div className="border-2 border-black bg-[#00FF85] text-black p-4 mb-6 text-sm neo-box font-bold flex items-center gap-2">
-            <span>✓</span> Found item logged & Rekognition pipeline triggered!
+            <CheckIcon className="w-4 h-4 text-black" />
+            <span>Found item logged & Rekognition pipeline triggered!</span>
           </div>
         )}
 
@@ -397,11 +407,13 @@ export default function FoundNew() {
                     : "bg-[#00FF85] text-black"
                 }`}
               >
-                <span>📷</span> {isCameraActive ? "Close Camera" : "Open Camera"}
+                <CameraIcon className="w-4 h-4" />
+                <span>{isCameraActive ? "Close Camera" : "Open Camera"}</span>
               </button>
 
               <label className="px-3 py-2 border-2 border-black font-bold text-xs uppercase neo-btn bg-white text-black cursor-pointer flex items-center gap-1.5">
-                <span>📁</span> Upload File
+                <DocumentIcon className="w-4 h-4 text-black" />
+                <span>Upload File</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -414,9 +426,10 @@ export default function FoundNew() {
                 <button
                   type="button"
                   onClick={removePhoto}
-                  className="px-3 py-2 border-2 border-black font-bold text-xs uppercase neo-btn bg-gray-200 text-black ml-auto"
+                  className="px-3 py-2 border-2 border-black font-bold text-xs uppercase neo-btn bg-gray-200 text-black ml-auto flex items-center gap-1.5"
                 >
-                  ✕ Remove Photo
+                  <CloseIcon className="w-3.5 h-3.5" />
+                  <span>Remove Photo</span>
                 </button>
               )}
             </div>
@@ -442,7 +455,8 @@ export default function FoundNew() {
                     onClick={capturePhoto}
                     className="bg-[#2563EB] text-white px-6 py-2 border-2 border-white neo-btn font-bold text-sm tracking-wide flex items-center gap-2"
                   >
-                    <span>📸</span> Capture Snapshot
+                    <CameraIcon className="w-4 h-4 text-white" />
+                    <span>Capture Snapshot</span>
                   </button>
                 </div>
               </div>
@@ -459,7 +473,10 @@ export default function FoundNew() {
                 <div className="text-xs">
                   <p className="font-bold text-black uppercase">Photo Attached</p>
                   <p className="text-gray-600 truncate max-w-xs">{image?.name}</p>
-                  <p className="text-green-700 font-semibold mt-1">✓ Ready for Rekognition analysis</p>
+                  <p className="text-green-700 font-semibold mt-1 flex items-center gap-1">
+                    <CheckIcon className="w-3.5 h-3.5 text-green-700" />
+                    <span>Ready for Rekognition analysis</span>
+                  </p>
                 </div>
               </div>
             )}
@@ -479,8 +496,9 @@ export default function FoundNew() {
           <div className="mt-6 border-2 border-black bg-[#00FF85] p-5 neo-box">
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-xs uppercase font-black bg-black text-white px-2 py-0.5">
-                  ✓ Report Successfully Logged
+                <span className="text-xs uppercase font-black bg-black text-white px-2 py-0.5 flex items-center gap-1 w-max">
+                  <CheckIcon className="w-3.5 h-3.5 text-[#00FF85]" />
+                  <span>Report Successfully Logged</span>
                 </span>
                 <h3 className="text-xl font-bold text-black mt-2">
                   {submittedItem.title} (#{submittedItem.id})
@@ -489,7 +507,7 @@ export default function FoundNew() {
                   Location: <span className="font-bold">{submittedItem.location_found}</span> • Category: <span className="font-bold">{submittedItem.category}</span>
                 </p>
                 <p className="text-xs text-black mt-1">
-                  🤖 Rekognition labels extracted & automated matching initiated.
+                  AWS Rekognition labels extracted & automated matching initiated.
                 </p>
               </div>
               {submittedItem.presigned_url && (
@@ -523,7 +541,8 @@ export default function FoundNew() {
         <div className="border-b-4 border-black pb-3 mb-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-black flex items-center gap-2">
-              <span>📋</span> All Found Items in Custody
+              <DocumentIcon className="w-6 h-6 text-black" />
+              <span>All Found Items in Custody</span>
             </h2>
             <p className="text-gray-600 text-xs mt-0.5">
               Live inventory of items turned into Campus Security (Total: {recentlyFound.length})
@@ -561,7 +580,7 @@ export default function FoundNew() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-2xl">📦</span>
+                    <BoxIcon className="w-8 h-8 text-gray-400" />
                   )}
                 </div>
 
@@ -578,11 +597,13 @@ export default function FoundNew() {
                   </div>
 
                   <h3 className="font-bold text-black text-sm truncate">{item.title}</h3>
-                  <p className="text-[11px] text-gray-600">
-                    📍 {item.location_found}
+                  <p className="text-[11px] text-gray-600 flex items-center gap-1">
+                    <LocationIcon className="w-3 h-3 text-gray-500" />
+                    <span>{item.location_found}</span>
                   </p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">
-                    🗓 {new Date(item.date_found).toLocaleDateString()}
+                  <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+                    <CalendarIcon className="w-3 h-3 text-gray-400" />
+                    <span>{new Date(item.date_found).toLocaleDateString()}</span>
                   </p>
 
                   {item.description && (

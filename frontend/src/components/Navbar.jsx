@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  SearchIcon,
+  AlertIcon,
+  CameraIcon,
+  ChartIcon,
+  LightningIcon,
+  ShieldIcon,
+  CheckIcon,
+} from "./Icons";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -23,10 +32,10 @@ export default function Navbar() {
         {/* LEFT: Brand Logo */}
         <div className="flex items-center gap-3">
           <Link
-            to={token ? "/feed" : "/"}
+            to={token ? "/dashboard" : "/"}
             className="text-[#00C2FF] font-black text-xl tracking-tight flex items-center gap-2 hover:opacity-90"
           >
-            <span className="text-2xl">🔍</span>
+            <SearchIcon className="w-6 h-6 text-[#00C2FF]" />
             <span className="text-white">LostFound</span>
             <span className="bg-[#2563EB] text-white text-[10px] uppercase font-black px-1.5 py-0.5 rounded-none border border-white">
               CRCE
@@ -38,64 +47,78 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-2">
           <Link
             to="/dashboard"
-            className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+            className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 flex items-center gap-1.5 transition-all ${
               isActive("/dashboard") || isActive("/")
                 ? "bg-[#00FF85] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
                 : "bg-transparent text-white border-transparent hover:border-white"
             }`}
           >
-            📊 Dashboard
+            <ChartIcon className="w-3.5 h-3.5" />
+            <span>Dashboard</span>
           </Link>
-
 
           {token && (
             <>
               <Link
                 to="/lost/new"
-                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 flex items-center gap-1.5 transition-all ${
                   isActive("/lost/new")
                     ? "bg-[#FF5555] text-white border-white shadow-[2px_2px_0px_rgba(255,255,255,1)]"
                     : "bg-transparent text-white border-transparent hover:border-white"
                 }`}
               >
-                🚨 Report Lost
+                <AlertIcon className="w-3.5 h-3.5" />
+                <span>Report Lost</span>
               </Link>
 
               <Link
                 to="/found/new"
-                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 flex items-center gap-1.5 transition-all ${
                   isActive("/found/new")
                     ? "bg-[#00C2FF] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
                     : "bg-transparent text-white border-transparent hover:border-white"
                 }`}
               >
-                📸 Report Found
+                <CameraIcon className="w-3.5 h-3.5" />
+                <span>Report Found</span>
               </Link>
 
               <Link
                 to="/matches"
-                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 flex items-center gap-1.5 transition-all ${
                   isActive("/matches")
                     ? "bg-[#FFD60A] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
                     : "bg-transparent text-white border-transparent hover:border-white"
                 }`}
               >
-                ⚡ AI Matches
+                <LightningIcon className="w-3.5 h-3.5" />
+                <span>AI Matches</span>
               </Link>
 
               <Link
                 to="/claims"
-                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
+                className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 flex items-center gap-1.5 transition-all ${
                   isActive("/claims")
                     ? "bg-[#FF9F1C] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
                     : "bg-transparent text-[#FFD60A] border-transparent hover:border-[#FFD60A]"
                 }`}
               >
-                {role === "security" ? "🛡️ Security Handover Desk" : "🤝 Claims & Handover"}
+                {role === "security" ? (
+                  <>
+                    <ShieldIcon className="w-3.5 h-3.5" />
+                    <span>Security Handover Desk</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckIcon className="w-3.5 h-3.5" />
+                    <span>Claims & Handover</span>
+                  </>
+                )}
               </Link>
             </>
           )}
         </div>
+
 
 
         {/* RIGHT: User Badge & Actions */}
@@ -150,10 +173,14 @@ export default function Navbar() {
           )}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="text-white text-2xl font-bold p-1 focus:outline-none"
+            className="text-white p-1 focus:outline-none flex items-center justify-center"
             aria-label="Toggle navigation menu"
           >
-            {menuOpen ? "✕" : "☰"}
+            {menuOpen ? <CloseIcon className="w-6 h-6" /> : (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="square" strokeLinejoin="miter" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
           </button>
         </div>
       </div>
@@ -166,7 +193,8 @@ export default function Navbar() {
             onClick={() => setMenuOpen(false)}
             className="py-2.5 px-4 bg-gray-900 text-[#00FF85] border border-gray-800 flex items-center gap-2"
           >
-            📰 Public Feed (All Lost & Found)
+            <SearchIcon className="w-4 h-4" />
+            <span>Public Feed (All Lost & Found)</span>
           </Link>
 
           {!token ? (
@@ -193,31 +221,42 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="py-2.5 px-4 bg-gray-900 text-white border border-gray-800 flex items-center gap-2"
               >
-                🚨 Report Lost Item
+                <AlertIcon className="w-4 h-4 text-red-500" />
+                <span>Report Lost Item</span>
               </Link>
               <Link
                 to="/found/new"
                 onClick={() => setMenuOpen(false)}
                 className="py-2.5 px-4 bg-gray-900 text-white border border-gray-800 flex items-center gap-2"
               >
-                📸 Report Found Item
+                <CameraIcon className="w-4 h-4 text-[#00C2FF]" />
+                <span>Report Found Item</span>
               </Link>
               <Link
                 to="/matches"
                 onClick={() => setMenuOpen(false)}
                 className="py-2.5 px-4 bg-gray-900 text-[#FFD60A] border border-gray-800 flex items-center gap-2"
               >
-                ⚡ My AI Matches
+                <LightningIcon className="w-4 h-4 text-[#FFD60A]" />
+                <span>My AI Matches</span>
               </Link>
-              {role === "security" && (
-                <Link
-                  to="/claims"
-                  onClick={() => setMenuOpen(false)}
-                  className="py-2.5 px-4 bg-gray-900 text-[#FF9F1C] border border-gray-800 flex items-center gap-2"
-                >
-                  🛡️ Security Claims Desk
-                </Link>
-              )}
+              <Link
+                to="/claims"
+                onClick={() => setMenuOpen(false)}
+                className="py-2.5 px-4 bg-gray-900 text-[#FF9F1C] border border-gray-800 flex items-center gap-2"
+              >
+                {role === "security" ? (
+                  <>
+                    <ShieldIcon className="w-4 h-4 text-[#FF9F1C]" />
+                    <span>Security Handover Desk</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckIcon className="w-4 h-4 text-[#FF9F1C]" />
+                    <span>Claims & Handover</span>
+                  </>
+                )}
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-center py-2 mt-2 bg-red-600 text-white border border-white text-xs uppercase font-bold"

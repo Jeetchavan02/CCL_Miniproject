@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { SearchIcon } from "../components/Icons";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -142,7 +143,8 @@ export default function LandingPage() {
       <footer className="bg-black text-white py-8 px-6 mt-auto">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm font-bold">
           <div className="text-[#00C2FF] flex items-center gap-2">
-            <span>🔍</span> LostFound
+            <SearchIcon className="w-5 h-5 text-[#00C2FF]" />
+            <span>LostFound</span>
           </div>
           <div className="text-gray-400 font-medium">
             Automated Campus Item Recovery System

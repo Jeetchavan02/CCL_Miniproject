@@ -12,12 +12,29 @@ from dependencies import require_role
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables if they do not exist (especially useful in local development)
+    # Create tables if they do not exist
     try:
         Base.metadata.create_all(bind=engine)
+        # Ensure default security officer account exists
+        from database import SessionLocal
+        from security import hash_password
+        db = SessionLocal()
+        officer = db.query(models.User).filter(models.User.email == "officer@college.edu").first()
+        if not officer:
+            new_officer = models.User(
+                email="officer@college.edu",
+                full_name="Campus Security Officer",
+                hashed_password=hash_password("AdminPass123!"),
+                role="security",
+            )
+            db.add(new_officer)
+            db.commit()
+            print("Seeded default security officer: officer@college.edu / AdminPass123!")
+        db.close()
     except Exception as e:
         print(f"Warning: Database initialization delayed or failed: {e}")
     yield
+
 
 
 app = FastAPI(
