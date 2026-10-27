@@ -9,6 +9,8 @@ import FoundNew from "./pages/FoundNew";
 import Matches from "./pages/Matches";
 import Claims from "./pages/Claims";
 
+import Dashboard from "./pages/Dashboard";
+
 // Route guard requiring authenticated user
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -19,6 +21,8 @@ function ProtectedRoute({ children }) {
 }
 
 export default function App() {
+  const token = localStorage.getItem("token");
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#F0F4FF] flex flex-col font-sans">
@@ -26,7 +30,9 @@ export default function App() {
         <main className="flex-1">
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={token ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/feed" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
@@ -65,10 +71,11 @@ export default function App() {
             />
 
             {/* Default Catch-all */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>
       </div>
     </BrowserRouter>
   );
 }
+

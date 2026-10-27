@@ -37,15 +37,16 @@ export default function Navbar() {
         {/* CENTER: Direct One-Click Navigation Pills */}
         <div className="hidden lg:flex items-center gap-2">
           <Link
-            to="/feed"
+            to="/dashboard"
             className={`px-3 py-1.5 text-xs uppercase font-black tracking-wider border-2 transition-all ${
-              isActive("/feed")
+              isActive("/dashboard") || isActive("/")
                 ? "bg-[#00FF85] text-black border-black shadow-[2px_2px_0px_rgba(255,255,255,1)]"
                 : "bg-transparent text-white border-transparent hover:border-white"
             }`}
           >
-            📰 Public Feed
+            📊 Dashboard
           </Link>
+
 
           {token && (
             <>
