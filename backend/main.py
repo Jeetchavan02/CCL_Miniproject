@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     # Create tables if they do not exist
     try:
         Base.metadata.create_all(bind=engine)
-        # Ensure default security officer account exists
+        # Ensure default security officer and student accounts exist and have expected test passwords
         from database import SessionLocal
         from security import hash_password
         db = SessionLocal()
@@ -30,6 +30,15 @@ async def lifespan(app: FastAPI):
             db.add(new_officer)
             db.commit()
             print("Seeded default security officer: officer@college.edu / AdminPass123!")
+        else:
+            officer.hashed_password = hash_password("AdminPass123!")
+            officer.role = "security"
+            db.commit()
+
+        student = db.query(models.User).filter(models.User.email == "student@college.edu").first()
+        if student:
+            student.hashed_password = hash_password("StudentPass123!")
+            db.commit()
         db.close()
     except Exception as e:
         print(f"Warning: Database initialization delayed or failed: {e}")
