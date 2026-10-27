@@ -48,7 +48,7 @@ export default function Claims() {
   if (loading) return <Spinner />;
 
   return (
-    <div className="max-w-4xl mx-auto p-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="border-b-4 border-black pb-4 mb-6">
         <h1 className="text-3xl font-bold text-black">Found Items — Claims</h1>
         <p className="text-gray-600 text-sm mt-1">

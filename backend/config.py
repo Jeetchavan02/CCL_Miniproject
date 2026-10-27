@@ -60,7 +60,7 @@ class Settings:
     def DB_NAME(self) -> str:
         if self.LOCAL_DEV:
             return os.getenv("DB_NAME", "lostfound_db")
-        return os.getenv("DB_NAME", "lostfound_db")
+        return get_parameter("/lostfound/db_name", default="lostfound_db")
 
     @property
     def JWT_SECRET(self) -> str:

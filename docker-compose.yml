@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: lostfound-backend
+    expose:
+      - "8000"
+    env_file:
+      - ./backend/.env
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-region: "us-east-1"
+        awslogs-group: "/lostfound/app"
+        awslogs-stream: "backend"
+        awslogs-create-group: "true"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: "/api"
+    container_name: lostfound-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-region: "us-east-1"
+        awslogs-group: "/lostfound/app"
+        awslogs-stream: "frontend"
+        awslogs-create-group: "true"
+    restart: unless-stopped

@@ -83,18 +83,18 @@ export default function Matches() {
   if (loading) return <Spinner />;
 
   return (
-    <div className="max-w-4xl mx-auto p-4 py-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-black">My Matches</h1>
           <p className="text-gray-600 text-sm mt-1">
-            Real-time AI matching based on categories, visual Rekognition tags, and descriptions.
+            Real-time AI matching based on categories and descriptions
           </p>
         </div>
 
         <Link
           to="/lost/new"
-          className="bg-[#2563EB] text-white px-5 py-2.5 border-2 border-black neo-btn font-bold tracking-wide self-start md:self-auto"
+          className="bg-[#2563EB] text-white px-5 py-2.5 border-2 border-black neo-btn font-bold tracking-wide"
         >
           + Report Lost Item
         </Link>
