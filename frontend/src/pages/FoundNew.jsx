@@ -228,6 +228,11 @@ export default function FoundNew() {
                 <img
                   src={getItemImageUrl(selectedItem.presigned_url)}
                   alt={selectedItem.title}
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.parentElement.innerHTML =
+                      '<div class="text-center text-gray-500 font-bold text-xs p-4"><span class="text-4xl block mb-2">📦</span>IMAGE STORED ON CLOUD / LOCAL PREVIEW UNAVAILABLE</div>';
+                  }}
                   className="w-full h-full object-contain"
                 />
               ) : (
@@ -585,6 +590,12 @@ export default function FoundNew() {
                       "{item.description}"
                     </p>
                   )}
+
+                  {/* Expand Cue */}
+                  <div className="mt-3 flex items-center justify-between text-[11px] font-black text-[#2563EB] group-hover:translate-x-1 transition-transform">
+                    <span>Click to expand</span>
+                    <span>→</span>
+                  </div>
                 </div>
               </div>
             ))}
