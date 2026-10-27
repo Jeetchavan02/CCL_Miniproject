@@ -6,7 +6,7 @@ from sqlalchemy import text
 from config import settings
 from database import get_db, engine, Base
 import models  # Ensures models are imported for metadata creation
-from routers import auth
+from routers import auth, items
 from dependencies import require_role
 
 
@@ -38,6 +38,7 @@ app.add_middleware(
 
 # Register routers
 app.include_router(auth.router, prefix="/auth")
+app.include_router(items.router, prefix="/items")
 
 
 @app.get("/")
