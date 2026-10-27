@@ -70,3 +70,15 @@ class FoundItemOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class MatchOut(BaseModel):
+    id: int
+    lost_item_id: int
+    found_item_id: int
+    confidence_score: float
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

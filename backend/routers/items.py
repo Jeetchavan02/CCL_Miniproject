@@ -8,6 +8,7 @@ from database import get_db
 import models
 from schemas import LostItemCreate, LostItemOut, FoundItemOut
 from dependencies import get_current_user
+from routers.matching import run_matching, run_reverse_matching
 
 router = APIRouter(tags=["Items"])
 
@@ -80,6 +81,7 @@ def create_lost_item(
     db.add(lost_item)
     db.commit()
     db.refresh(lost_item)
+    run_reverse_matching(lost_item.id, db)
     return lost_item
 
 
@@ -140,6 +142,7 @@ def create_found_item(
     db.add(found_item)
     db.commit()
     db.refresh(found_item)
+    run_matching(found_item.id, db)
 
     presigned_url = generate_presigned_url(found_item.storage_key)
 
