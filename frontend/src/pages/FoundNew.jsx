@@ -185,9 +185,100 @@ export default function FoundNew() {
   };
 
 
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const getItemImageUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith("http")) return url;
+    return `${apiUrl}${url}`;
+  };
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* PHOTO & DETAILS MODAL */}
+      {selectedItem && (
+        <div
+          onClick={() => setSelectedItem(null)}
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white border-4 border-black neo-box max-w-lg w-full max-h-[90vh] overflow-y-auto p-6"
+          >
+            <div className="flex justify-between items-start mb-4 border-b-2 border-black pb-3">
+              <div>
+                <span className="text-[10px] font-black uppercase bg-[#F0F4FF] border border-black px-2 py-0.5 text-[#2563EB]">
+                  {selectedItem.category}
+                </span>
+                <h2 className="text-2xl font-bold text-black mt-1">
+                  {selectedItem.title}
+                </h2>
+              </div>
+              <button
+                onClick={() => setSelectedItem(null)}
+                className="text-black font-black text-lg border-2 border-black px-2 py-0.5 hover:bg-red-500 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Photo Preview in Modal */}
+            <div className="border-2 border-black bg-gray-100 h-64 mb-4 flex items-center justify-center overflow-hidden">
+              {getItemImageUrl(selectedItem.presigned_url) ? (
+                <img
+                  src={getItemImageUrl(selectedItem.presigned_url)}
+                  alt={selectedItem.title}
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <div className="text-center text-gray-400 p-4 font-bold text-xs">
+                  <span className="text-4xl block mb-2">📦</span>
+                  NO PHOTO UPLOADED FOR THIS ITEM
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between border-b border-gray-200 pb-2">
+                <span className="font-bold text-gray-600">Location Found:</span>
+                <span className="font-semibold text-black">{selectedItem.location_found}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-200 pb-2">
+                <span className="font-bold text-gray-600">Date Logged:</span>
+                <span className="font-semibold text-black">
+                  {new Date(selectedItem.date_found).toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between border-b border-gray-200 pb-2">
+                <span className="font-bold text-gray-600">Custody Status:</span>
+                <span className="font-bold uppercase text-xs bg-yellow-300 border border-black px-2 py-0.5">
+                  {selectedItem.status || "reported"}
+                </span>
+              </div>
+
+              {selectedItem.description && (
+                <div className="pt-2">
+                  <span className="font-bold text-gray-600 block mb-1">Finder's Description:</span>
+                  <p className="bg-gray-50 border border-black p-3 text-xs text-gray-800 font-mono">
+                    "{selectedItem.description}"
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => setSelectedItem(null)}
+              className="mt-6 w-full bg-black text-white font-bold py-2.5 border-2 border-black neo-btn uppercase text-xs tracking-wider"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Main Container */}
       <div className="bg-white border-2 border-black neo-box p-8">
+
         <h1 className="text-3xl font-bold text-black mb-2">Report Found Item</h1>
         <p className="text-gray-600 text-sm mb-6">
           Log a recovered item. Uploading an image enables automatic AI label & feature detection.
@@ -452,13 +543,15 @@ export default function FoundNew() {
             {recentlyFound.map((item) => (
               <div
                 key={item.id}
-                className="bg-white border-2 border-black neo-box p-4 flex gap-4 items-start"
+                onClick={() => setSelectedItem(item)}
+                className="bg-white border-2 border-black neo-box p-4 flex gap-4 items-start cursor-pointer hover:border-[#2563EB] transition-all group"
+                title="Click to view details and full image"
               >
                 {/* Photo Thumbnail */}
-                <div className="w-24 h-24 bg-gray-100 border-2 border-black flex-shrink-0 flex items-center justify-center overflow-hidden">
-                  {item.presigned_url ? (
+                <div className="w-24 h-24 bg-gray-100 border-2 border-black flex-shrink-0 flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
+                  {getItemImageUrl(item.presigned_url) ? (
                     <img
-                      src={item.presigned_url}
+                      src={getItemImageUrl(item.presigned_url)}
                       alt={item.title}
                       className="w-full h-full object-cover"
                     />
@@ -466,6 +559,7 @@ export default function FoundNew() {
                     <span className="text-2xl">📦</span>
                   )}
                 </div>
+
 
                 {/* Details */}
                 <div className="flex-1 min-w-0">

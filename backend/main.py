@@ -36,10 +36,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount local uploads directory if in local development
+import os
+from fastapi.staticfiles import StaticFiles
+
+os.makedirs("uploads", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 # Register routers
 app.include_router(auth.router, prefix="/auth")
 app.include_router(items.router, prefix="/items")
 app.include_router(matching.router, prefix="/matches")
+
 
 
 @app.get("/")

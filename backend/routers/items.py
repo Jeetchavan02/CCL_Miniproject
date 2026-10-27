@@ -16,9 +16,16 @@ router = APIRouter(tags=["Items"])
 def generate_presigned_url(s3_key: Optional[str], expiration: int = 3600) -> Optional[str]:
     """
     Generate a presigned GET URL for an S3 object.
-    In local dev mode with 'local-bucket' or if s3_key is empty/local, return None.
+    In local dev mode with 'local/' key, return the local server /uploads URL.
     """
-    if not s3_key or settings.LOCAL_DEV or settings.S3_BUCKET == "local-bucket" or s3_key.startswith("local/"):
+    if not s3_key:
+        return None
+
+    if s3_key.startswith("local/"):
+        filename = s3_key.replace("local/", "")
+        return f"/uploads/{filename}"
+
+    if settings.LOCAL_DEV or settings.S3_BUCKET == "local-bucket":
         return None
 
     try:
@@ -38,13 +45,22 @@ def generate_presigned_url(s3_key: Optional[str], expiration: int = 3600) -> Opt
 def upload_to_s3(file: UploadFile) -> str:
     """
     Upload file to S3 with key 'found/{uuid4}_{filename}'.
-    If LOCAL_DEV is true or S3_BUCKET is 'local-bucket', skips actual upload.
+    If LOCAL_DEV is true or S3_BUCKET is 'local-bucket', save file locally into uploads/.
     """
     filename = file.filename or "upload.jpg"
     unique_id = str(uuid.uuid4())
+    stored_name = f"{unique_id}_{filename}"
 
     if settings.LOCAL_DEV or settings.S3_BUCKET == "local-bucket":
-        return f"local/skipped_{filename}"
+        import os
+        import shutil
+        os.makedirs("uploads", exist_ok=True)
+        local_path = os.path.join("uploads", stored_name)
+        with open(local_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        # Reset file pointer in case caller needs it
+        file.file.seek(0)
+        return f"local/{stored_name}"
 
     s3_key = f"found/{unique_id}_{filename}"
     import boto3
@@ -56,6 +72,7 @@ def upload_to_s3(file: UploadFile) -> str:
         ExtraArgs={"ContentType": file.content_type or "application/octet-stream"},
     )
     return s3_key
+
 
 
 # ----------------- Lost Items Endpoints -----------------
