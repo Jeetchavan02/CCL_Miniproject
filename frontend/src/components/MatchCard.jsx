@@ -1,8 +1,18 @@
-import React from "react";
+import { CheckIcon, HandshakeIcon } from "./Icons";
 
 export default function MatchCard({ lostItem, matches = [], foundItems = {} }) {
+  const isResolved = lostItem.status === "resolved";
+
   return (
-    <div className="bg-white border-2 border-black neo-box p-6 mb-6">
+    <div className={`border-2 border-black neo-box p-6 mb-6 ${isResolved ? "bg-[#F0FDF4]" : "bg-white"}`}>
+      {/* Handover Resolved Banner */}
+      {isResolved && (
+        <div className="border-2 border-black bg-[#00FF85] text-black px-4 py-2 mb-4 font-black text-xs uppercase tracking-wider flex items-center gap-2">
+          <CheckIcon className="w-4 h-4 text-black" />
+          <span>Handover Complete — Item Successfully Collected From Campus Security Desk</span>
+        </div>
+      )}
+
       {/* Lost Item Header */}
       <div className="border-b-2 border-black pb-4 mb-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div>
@@ -14,7 +24,11 @@ export default function MatchCard({ lostItem, matches = [], foundItems = {} }) {
             Lost at: <span className="font-semibold text-black">{lostItem.location_lost}</span> • {new Date(lostItem.date_lost).toLocaleDateString()}
           </p>
         </div>
-        <span className="self-start md:self-auto text-xs uppercase font-bold px-3 py-1 border-2 border-black bg-gray-100">
+        <span
+          className={`self-start md:self-auto text-xs uppercase font-bold px-3 py-1 border-2 border-black ${
+            isResolved ? "bg-[#00FF85] text-black font-black" : "bg-gray-100 text-black"
+          }`}
+        >
           Status: {lostItem.status}
         </span>
       </div>
@@ -73,16 +87,34 @@ export default function MatchCard({ lostItem, matches = [], foundItems = {} }) {
                     )}
                   </div>
 
-                  {found && found.presigned_url && (
-                    <a
-                      href={found.presigned_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-white border-2 border-black px-3 py-1.5 text-xs font-bold neo-btn text-black hover:bg-gray-100"
-                    >
-                      View Photo
-                    </a>
-                  )}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {found && found.presigned_url && (
+                      <a
+                        href={found.presigned_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-white border-2 border-black px-3 py-1.5 text-xs font-bold neo-btn text-black hover:bg-gray-100"
+                      >
+                        View Photo
+                      </a>
+                    )}
+                    {found && (
+                      found.status === "claimed" || isResolved ? (
+                        <span className="bg-[#00FF85] text-black border-2 border-black px-3 py-1.5 text-xs font-black uppercase tracking-wider flex items-center gap-1">
+                          <CheckIcon className="w-3.5 h-3.5" />
+                          Handed Over
+                        </span>
+                      ) : (
+                        <a
+                          href={`/claims?item_id=${found.id}`}
+                          className="bg-[#2563EB] text-white border-2 border-black px-3 py-1.5 text-xs font-bold neo-btn hover:bg-blue-700 flex items-center gap-1"
+                        >
+                          <HandshakeIcon className="w-3.5 h-3.5" />
+                          Claim Item
+                        </a>
+                      )
+                    )}
+                  </div>
                 </div>
               );
             })}

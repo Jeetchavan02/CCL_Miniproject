@@ -11,6 +11,7 @@ export default function LostNew() {
   const [description, setDescription] = useState("");
   const [dateLost, setDateLost] = useState(new Date().toISOString().slice(0, 16));
   const [locationLost, setLocationLost] = useState("");
+  const [unsureLocation, setUnsureLocation] = useState(false);
   const [category, setCategory] = useState("Electronics");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -23,6 +24,9 @@ export default function LostNew() {
 
     try {
       const formattedDate = new Date(dateLost).toISOString().slice(0, 19);
+      const finalLocation = unsureLocation
+        ? "Somewhere on Campus (Location Unknown / Not Sure)"
+        : locationLost;
 
       const res = await fetch(`${apiUrl}/items/lost`, {
         method: "POST",
@@ -34,7 +38,7 @@ export default function LostNew() {
           title,
           description,
           date_lost: formattedDate,
-          location_lost: locationLost,
+          location_lost: finalLocation,
           category,
         }),
       });
@@ -123,17 +127,34 @@ export default function LostNew() {
             </div>
 
             <div>
-              <label className="block uppercase font-bold text-xs tracking-wider mb-2 text-black">
-                LAST SEEN LOCATION
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block uppercase font-bold text-xs tracking-wider text-black">
+                  LAST SEEN LOCATION
+                </label>
+              </div>
               <input
                 type="text"
-                required
-                value={locationLost}
+                required={!unsureLocation}
+                disabled={unsureLocation}
+                value={unsureLocation ? "Somewhere on Campus (Location Unknown / Not Sure)" : locationLost}
                 onChange={(e) => setLocationLost(e.target.value)}
-                className="w-full p-3 border-2 border-black rounded-none focus:outline-none focus:border-[#2563EB] bg-white font-medium"
+                className={`w-full p-3 border-2 border-black rounded-none focus:outline-none focus:border-[#2563EB] font-medium ${
+                  unsureLocation ? "bg-gray-100 text-gray-500 italic cursor-not-allowed" : "bg-white text-black"
+                }`}
                 placeholder="e.g. Library 3rd Floor"
               />
+              <label className="mt-2 flex items-center gap-2 cursor-pointer select-none text-xs font-bold text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={unsureLocation}
+                  onChange={(e) => {
+                    setUnsureLocation(e.target.checked);
+                    if (e.target.checked) setLocationLost("");
+                  }}
+                  className="w-4 h-4 border-2 border-black accent-[#2563EB] rounded-none cursor-pointer"
+                />
+                <span>I am not sure of the exact location / Misplaced somewhere on campus</span>
+              </label>
             </div>
           </div>
 

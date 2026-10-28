@@ -357,6 +357,17 @@ def resolve_claim(
     if found_item and action == "approve":
         found_item.status = "claimed"
 
+        # Also mark the claimant's matching lost item as resolved and match as confirmed
+        matches = db.query(models.Match).filter(models.Match.found_item_id == found_item.id).all()
+        for m in matches:
+            lost = db.query(models.LostItem).filter(
+                models.LostItem.id == m.lost_item_id,
+                models.LostItem.user_id == claim.user_id,
+            ).first()
+            if lost:
+                lost.status = "resolved"
+                m.status = "confirmed"
+
     db.commit()
     db.refresh(claim)
 

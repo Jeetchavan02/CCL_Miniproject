@@ -72,24 +72,48 @@ def run_matching(found_item_id: int, db: Session) -> List[models.Match]:
     newly_created_matches: List[models.Match] = []
 
     found_desc_words = extract_keywords(found_item.description or "")
+    found_title_words = extract_keywords(found_item.title or "")
 
     for lost_item in open_lost_items:
         score = 0.0
 
-        # +40 if category matches (case-insensitive)
+        # 1. Category match (+35)
         if (found_item.category or "").strip().lower() == (lost_item.category or "").strip().lower():
-            score += 40.0
+            score += 35.0
 
-        # +30 if any Rekognition label appears in lost item description or title
+        # 2. Rekognition visual AI labels (+30 max)
         lost_title_lower = (lost_item.title or "").lower()
         lost_desc_lower = (lost_item.description or "").lower()
-        if any(lbl in lost_title_lower or lbl in lost_desc_lower for lbl in labels_list):
-            score += 30.0
+        matched_labels = [lbl for lbl in labels_list if lbl in lost_title_lower or lbl in lost_desc_lower]
+        if matched_labels:
+            # Base 25 for first label, up to 30 for multiple visual detections
+            score += min(30.0, 25.0 + (len(matched_labels) - 1) * 2.5)
 
-        # +30 for keyword overlap
+        # 3. Title keyword similarity (+20 max)
+        lost_title_words = extract_keywords(lost_item.title or "")
+        common_title_words = found_title_words.intersection(lost_title_words)
+        if common_title_words:
+            score += min(20.0, float(len(common_title_words) * 10))
+
+        # 4. Description keyword overlap (+15 max)
         lost_desc_words = extract_keywords(lost_item.description or "")
         common_words = found_desc_words.intersection(lost_desc_words)
-        score += min(30.0, float(len(common_words) * 10))
+        score += min(15.0, float(len(common_words) * 5))
+
+        # 5. Location flexibility / campus ambiguity handling
+        # If student indicated unknown/anywhere on campus, do not penalize; grant a neutral flexibility boost (+10)
+        # If exact room/floor match, grant (+15)
+        lost_loc = (lost_item.location_lost or "").strip().lower()
+        found_loc = (found_item.location_found or "").strip().lower()
+
+        unknown_indicators = ["not sure", "unknown", "anywhere", "somewhere", "campus", "unspecified"]
+        if any(ind in lost_loc for ind in unknown_indicators):
+            score += 10.0
+        elif lost_loc and found_loc and (lost_loc in found_loc or found_loc in lost_loc):
+            score += 15.0
+
+        # Cap maximum confidence score at 98.0%
+        score = min(98.0, round(score, 1))
 
         if score >= 40.0:
             # Check if match already exists

@@ -25,21 +25,20 @@ export default function Matches() {
       setError("");
 
       try {
-        // 1. Fetch lost items
+        // 1. Fetch lost items (both open and resolved)
         const lostRes = await fetch(`${apiUrl}/items/lost`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!lostRes.ok) throw new Error("Could not fetch lost items.");
         const allLost = await lostRes.json();
-        const openLost = allLost.filter((i) => i.status === "open");
-        setLostItems(openLost);
+        setLostItems(allLost);
 
         // 2. Fetch matches for each lost item
         const matchesByLost = {};
         const foundIdsToFetch = new Set();
 
         await Promise.all(
-          openLost.map(async (lost) => {
+          allLost.map(async (lost) => {
             try {
               const matchRes = await fetch(`${apiUrl}/matches/lost/${lost.id}`);
               if (matchRes.ok) {
