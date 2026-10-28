@@ -36,7 +36,7 @@ export default function Navbar() {
             className="text-[#00C2FF] font-black text-xl tracking-tight flex items-center gap-2 hover:opacity-90"
           >
             <SearchIcon className="w-6 h-6 text-[#00C2FF]" />
-            <span className="text-white">LostFound</span>
+            <span className="text-white">Lost<span className="text-[#00C2FF]">&</span>Found</span>
             <span className="bg-[#2563EB] text-white text-[10px] uppercase font-black px-1.5 py-0.5 rounded-none border border-white">
               CRCE
             </span>

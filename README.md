@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔍 LostFound@CRCE
+# 🔍 Lost&Found@CRCE
 ### *Campus Lost & Found Platform with Computer Vision & AI-Assisted Matching*
 
 *An intelligent, cloud-native recovery platform connecting lost belongings with their rightful owners using real-time camera capture, AWS Rekognition vision intelligence, automated SNS dispatches, and an official security custody handover desk.*
@@ -17,7 +17,7 @@
 
 <br/>
 
-> **LostFound@CRCE** replaces outdated paper logbooks and chaotic bulletin notices with an end-to-end automated item recovery platform. Built and deployed live on Amazon Web Services for Fr. Conceicao Rodrigues College of Engineering, it features live camera hardware snapshots, computer vision label extraction, confidence-scored match ranking, a 5-stage lifecycle recovery tracker, and digital proof-of-ownership handover certificates.
+> **Lost&Found@CRCE** replaces outdated paper logbooks and chaotic bulletin notices with an end-to-end automated item recovery platform. Built and deployed live on Amazon Web Services for Fr. Conceicao Rodrigues College of Engineering, it features live camera hardware snapshots, computer vision label extraction, confidence-scored match ranking, a 5-stage lifecycle recovery tracker, and digital proof-of-ownership handover certificates.
 
 </div>
 
@@ -52,7 +52,7 @@ The traditional recovery workflow suffers from major flaws:
 3. **Fraudulent Ownership Claims**: Without an auditable proof-verification process, anyone can claim an expensive device by giving generic descriptions.
 4. **No Visual Correlation**: Human descriptions vary wildly ("dark bag" vs. "navy blue Nike backpack").
 
-**LostFound@CRCE** bridges this gap by unifying students and campus security officers in a single automated cloud system.
+**Lost&Found@CRCE** bridges this gap by unifying students and campus security officers in a single automated cloud system.
 
 ---
 
@@ -246,7 +246,7 @@ docker compose ps
 
 ## 🔑 Dual Authentication Portals
 
-LostFound@CRCE features a separated, role-based login system in `Login.jsx`:
+Lost&Found@CRCE features a separated, role-based login system in `Login.jsx`:
 
 | Portal Tab | Target User | Default Email | Default Password | Primary Actions |
 | :--- | :--- | :--- | :--- | :--- |
@@ -296,7 +296,7 @@ When an item photo is uploaded:
 
 ## 🤝 Claims & Handover Desk
 
-To eliminate fraudulent claims, LostFound@CRCE implements a 2-step verification protocol:
+To eliminate fraudulent claims, Lost&Found@CRCE implements a 2-step verification protocol:
 
 1. **Claim Submission (Student)**:
    - A student identifies their misplaced belonging in the catalog.

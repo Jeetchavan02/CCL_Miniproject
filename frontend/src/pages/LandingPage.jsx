@@ -27,7 +27,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-base sm:text-xl text-gray-700 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-            LostFound uses AI-powered vision and semantic matching to reunite students
+            Lost&Found uses AI-powered vision and semantic matching to reunite students
             with their misplaced belongings. Report lost valuables, upload photos of found items,
             and receive automated match alerts the moment a match is identified.
           </p>
@@ -144,7 +144,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm font-bold">
           <div className="text-[#00C2FF] flex items-center gap-2">
             <SearchIcon className="w-5 h-5 text-[#00C2FF]" />
-            <span>LostFound</span>
+            <span>Lost<span className="text-white">&</span>Found</span>
           </div>
           <div className="text-gray-400 font-medium">
             Automated Campus Item Recovery System
