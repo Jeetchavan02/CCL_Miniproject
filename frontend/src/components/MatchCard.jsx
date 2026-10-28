@@ -3,6 +3,11 @@ import { CheckIcon, HandshakeIcon } from "./Icons";
 export default function MatchCard({ lostItem, matches = [], foundItems = {} }) {
   const isResolved = lostItem.status === "resolved";
 
+  // When resolved/handed over, show only the confirmed matched item that was handed over
+  const displayedMatches = isResolved
+    ? matches.filter((m) => m.status === "confirmed" || (foundItems[m.found_item_id]?.status === "claimed"))
+    : matches;
+
   return (
     <div className={`border-2 border-black neo-box p-6 mb-6 ${isResolved ? "bg-[#F0FDF4]" : "bg-white"}`}>
       {/* Handover Resolved Banner */}
@@ -42,19 +47,20 @@ export default function MatchCard({ lostItem, matches = [], foundItems = {} }) {
       {/* Matches List */}
       <div className="space-y-4">
         <h4 className="font-bold text-sm uppercase tracking-wider text-black">
-          Potential Matches ({matches.length})
+          {isResolved ? "Verified & Collected Item" : `Potential Matches (${displayedMatches.length})`}
         </h4>
 
-        {matches.length === 0 ? (
+        {displayedMatches.length === 0 ? (
           <p className="text-sm italic text-gray-500 py-2">
             No matches found yet. We will notify you when a matching item is turned in.
           </p>
         ) : (
           <div className="grid grid-cols-1 gap-3">
-            {matches.map((match) => {
+            {displayedMatches.map((match) => {
               const found = foundItems[match.found_item_id];
               const score = match.confidence_score;
               const isHigh = score >= 70;
+              const isItemHandedOver = match.status === "confirmed" || (found && found.status === "claimed");
 
               return (
                 <div
@@ -99,7 +105,7 @@ export default function MatchCard({ lostItem, matches = [], foundItems = {} }) {
                       </a>
                     )}
                     {found && (
-                      found.status === "claimed" || isResolved ? (
+                      isItemHandedOver ? (
                         <span className="bg-[#00FF85] text-black border-2 border-black px-3 py-1.5 text-xs font-black uppercase tracking-wider flex items-center gap-1">
                           <CheckIcon className="w-3.5 h-3.5" />
                           Handed Over
